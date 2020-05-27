@@ -20,6 +20,7 @@ class IndeedParser(threading.Thread):
         self.joblist = []
         self.vacancy_texts = []
 
+
         if len(keywords) > 1:
             self.name = "_".join(keywords.strip().split(" "))
             self.keywords = "+".join(keywords.strip().split(" "))
