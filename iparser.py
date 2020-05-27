@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from tqdm.auto import tqdm
 import pickle
 import threading
+from utils import time_track
 
 
 class IndeedParser(threading.Thread):
@@ -33,8 +34,6 @@ class IndeedParser(threading.Thread):
         else:
             self.jobsearch_url = f"https://ru.indeed.com/jobs?q={self.keywords}"
 
-
-
     def _make_soup(self, url):
         """ Создает объект soup из ссылки """
 
@@ -43,7 +42,7 @@ class IndeedParser(threading.Thread):
         soup = BeautifulSoup(page, "html.parser")
         return soup
 
-    def generate_pagination_links(self):
+    def _generate_pagination_links(self):
         """ Генерирует ссылки на списки с вакансиями по общему числу вакансий"""
 
         soup = self._make_soup(self.jobsearch_url)
@@ -56,7 +55,7 @@ class IndeedParser(threading.Thread):
 
         return self.pagelinks
 
-    def get_vacancy_pages(self, jobs_url):
+    def _get_vacancy_pages(self, jobs_url):
         """ Получает список ссылок на вакансии """
 
         soup = self._make_soup(jobs_url)
@@ -69,7 +68,7 @@ class IndeedParser(threading.Thread):
 
         return temp_joblist
 
-    def get_vacancy_text(self, right_link_part):
+    def _get_vacancy_text(self, right_link_part):
         """ Получает текст вакансии """
 
         vacancy_link = "https://ru.indeed.com" + right_link_part
@@ -78,46 +77,45 @@ class IndeedParser(threading.Thread):
 
         return page_content
 
-
     def run(self):
         """ Запускает парсер """
 
         print(self.jobsearch_url)
-        joblist_pages = self.generate_pagination_links()
+        joblist_pages = self._generate_pagination_links()
 
         self.list_of_vacancy_links = []
 
         for pager in joblist_pages:
             joblist_url = pager
-            temp_list_of_vacancy_links = self.get_vacancy_pages(joblist_url)
+            temp_list_of_vacancy_links = self._get_vacancy_pages(joblist_url)
             self.list_of_vacancy_links.extend(temp_list_of_vacancy_links)
 
         self.list_of_vacancy_links = list(set(self.list_of_vacancy_links))
 
         for vaclink in tqdm(self.list_of_vacancy_links):
-            vac_text = self.get_vacancy_text(vaclink)
+            vac_text = self._get_vacancy_text(vaclink)
             self.vacancy_texts.append(vac_text)
 
 
+@time_track
 def main():
-
-    professions_ru = [
-        "Java разработчик ",
+    professions = [
+        # "Java разработчик ",
         "Software engineer",
         "Web разработчик",
         "Front-end разработчик",
-        "Продуктовый дизайнер",
-        "Системный аналитик",
-        "Архитектор систем",
-        "Agile coach",
-        "Data Scientist",
-        "Data engineer",
-        "Бизнес-аналитик",
-        "Финансовый аналитик",
-        "Кредитный аналитик",
-        "Юрист корпоративный",
-        "Юрист судебный",
-        "Маркетолог",
+        # "Продуктовый дизайнер",
+        # "Системный аналитик",
+        # "Архитектор систем",
+        # "Agile coach",
+        # "Data Scientist",
+        # "Data engineer",
+        # "Бизнес-аналитик",
+        # "Финансовый аналитик",
+        # "Кредитный аналитик",
+        # "Юрист корпоративный",
+        # "Юрист судебный",
+        # "Маркетолог",
     ]
 
     professions_en = [
@@ -141,16 +139,18 @@ def main():
     ]
 
     parsed_dict = {prof: IndeedParser(keywords=prof, region="Moscow") for prof in professions}
-
     for prof_parser in parsed_dict.values():
         prof_parser.start()
     for prof_parser in parsed_dict.values():
         prof_parser.join()
 
-    with open("parsed_dict.pkl", "wb") as f:
-        pickle.dump(parsed_dict, f)
+    vacs_dict = {}
+    for k, v in parsed_dict.items():
+        vacs_dict[k] = v.vacancy_texts
+
+    with open("vacs_dict.pkl", "wb") as f:
+        pickle.dump(vacs_dict, f)
+
 
 if __name__ == '__main__':
     main()
-
-
