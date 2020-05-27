@@ -4,6 +4,7 @@ from tqdm.auto import tqdm
 import pickle
 import threading
 from utils import time_track
+from utils import professions
 
 
 class IndeedParser(threading.Thread):
@@ -13,12 +14,14 @@ class IndeedParser(threading.Thread):
         self.pagelinks = None
         self.keywords = keywords
         self.region = region
-        self.jobsearch_url = "https://ru.indeed.com/jobs?"
+        self.base_url = "indeed.com"
+        self.jobsearch_url = None # "https://ru.indeed.com/jobs?"
         self.query = None
         self.location = None
         self.name = None
         self.joblist = []
         self.vacancy_texts = []
+
 
 
         if len(keywords) > 1:
@@ -31,9 +34,18 @@ class IndeedParser(threading.Thread):
         if region:
             self.region = region
             self.name += "_" + region
-            self.jobsearch_url = f"https://ru.indeed.com/jobs?q={self.keywords}&l={self.region}"
+            if region in ["Berlin"]:
+                self.base_url = f"de.{self.base_url}"
+                self.jobsearch_url = f"https://{self.base_url}/jobs?q={self.keywords}&l={self.region}"
+            elif region in ["Москва",'Moscow']:
+                self.base_url = f"ru.{self.base_url}"
+                self.jobsearch_url = f"https://{self.base_url}/jobs?q={self.keywords}&l={self.region}"
+            elif region in ["London"]:
+                self.base_url = "www.indeed.co.uk"
+                self.jobsearch_url = f"https://{self.base_url}/jobs?q={self.keywords}&l={self.region}"
         else:
             self.jobsearch_url = f"https://ru.indeed.com/jobs?q={self.keywords}"
+
 
     def _make_soup(self, url):
         """ Создает объект soup из ссылки """
@@ -100,46 +112,8 @@ class IndeedParser(threading.Thread):
 
 @time_track
 def main():
-    professions = [
-        # "Java разработчик ",
-        "Software engineer",
-        "Web разработчик",
-        "Front-end разработчик",
-        # "Продуктовый дизайнер",
-        # "Системный аналитик",
-        # "Архитектор систем",
-        # "Agile coach",
-        # "Data Scientist",
-        # "Data engineer",
-        # "Бизнес-аналитик",
-        # "Финансовый аналитик",
-        # "Кредитный аналитик",
-        # "Юрист корпоративный",
-        # "Юрист судебный",
-        # "Маркетолог",
-    ]
 
-    professions_en = [
-        "Java Developer ",
-        "Software engineer",
-        "Web Developer",
-        "Front-end Developer",
-        "Product Designer",
-        "System analyst",
-        "System architect",
-        "Agile coach",
-        "Data Scientist",
-        "Data engineer",
-        "Business-analyst",
-        "Financial analyst",
-        "Credit analyst",
-        "Corporate lawyer",
-        "Judicial Lawyer",
-        "Marketing Manager",
-        "Marketing Specialist",
-    ]
-
-    parsed_dict = {prof: IndeedParser(keywords=prof, region="Moscow") for prof in professions}
+    parsed_dict = {prof: IndeedParser(keywords=prof, region="Moscow") for prof in professions["ru"]}
     for prof_parser in parsed_dict.values():
         prof_parser.start()
     for prof_parser in parsed_dict.values():

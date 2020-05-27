@@ -12,3 +12,47 @@ def time_track(func):
         print(f'Функция работала {elapsed} секунд(ы)')
         return result
     return surrogate
+
+professions_ru = [
+    "Java разработчик ",
+    "Software engineer",
+    "Web разработчик",
+    "Front-end разработчик",
+    "Продуктовый дизайнер",
+    "Системный аналитик",
+    "Архитектор систем",
+    "Agile coach",
+    "Data Scientist",
+    "Data engineer",
+    "Бизнес-аналитик",
+    "Финансовый аналитик",
+    "Кредитный аналитик",
+    "Юрист корпоративный",
+    "Юрист судебный",
+    "Маркетолог",
+]
+
+professions_en = [
+    "Java Developer ",
+    "Software engineer",
+    "Web Developer",
+    "Front-end Developer",
+    "Product Designer",
+    "System analyst",
+    "System architect",
+    "Agile coach",
+    "Data Scientist",
+    "Data engineer",
+    "Business-analyst",
+    "Financial analyst",
+    "Credit analyst",
+    "Corporate lawyer",
+    "Judicial Lawyer",
+    "Marketing Manager",
+    "Marketing Specialist",
+]
+
+professions = {
+    "ru": professions_ru,
+    "en": professions_en,
+}
