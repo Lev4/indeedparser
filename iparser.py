@@ -2,19 +2,38 @@ import requests
 from bs4 import BeautifulSoup
 from tqdm.auto import tqdm
 import pickle
+import threading
 
 
-class IndeedParser:
+class IndeedParser(threading.Thread):
 
-    def __init__(self):
+    def __init__(self, keywords, region, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.pagelinks = None
-        self.keywords = None
-        self.region = None
+        self.keywords = keywords
+        self.region = region
         self.jobsearch_url = "https://ru.indeed.com/jobs?"
         self.query = None
         self.location = None
+        self.name = None
         self.joblist = []
         self.vacancy_texts = []
+
+        if len(keywords) > 1:
+            self.name = "_".join(keywords.strip().split(" "))
+            self.keywords = "+".join(keywords.strip().split(" "))
+        else:
+            self.keywords = keywords.strip()
+            self.name = keywords.strip()
+
+        if region:
+            self.region = region
+            self.name += "_" + region
+            self.jobsearch_url = f"https://ru.indeed.com/jobs?q={self.keywords}&l={self.region}"
+        else:
+            self.jobsearch_url = f"https://ru.indeed.com/jobs?q={self.keywords}"
+
+
 
     def _make_soup(self, url):
         """ Создает объект soup из ссылки """
@@ -59,20 +78,6 @@ class IndeedParser:
 
         return page_content
 
-    def fit(self, keywords, region):
-        """ Собирает все по заданным ключевым словам """
-
-        if len(keywords) > 1:
-            self.keywords = "+".join(keywords.strip().split(" "))
-        else:
-            self.keywords = keywords.strip()
-
-        if region:
-            self.region = region
-            self.jobsearch_url = f"https://ru.indeed.com/jobs?q={self.keywords}&l={self.region}"
-        else:
-            self.jobsearch_url = f"https://ru.indeed.com/jobs?q={self.keywords}"
-        return self.jobsearch_url
 
     def run(self):
         """ Запускает парсер """
@@ -94,9 +99,9 @@ class IndeedParser:
             self.vacancy_texts.append(vac_text)
 
 
-if __name__ == '__main__':
+def main():
 
-    professions = [
+    professions_ru = [
         "Java разработчик ",
         "Software engineer",
         "Web разработчик",
@@ -115,13 +120,37 @@ if __name__ == '__main__':
         "Маркетолог",
     ]
 
-    vacancy_dict = {}
-    for prof in tqdm(professions):
-        print(prof)
-        p = IndeedParser()
-        p.fit(keywords=prof, region="Moscow")
-        p.run()
-        vacancy_dict[prof] = p.vacancy_texts
+    professions_en = [
+        "Java Developer ",
+        "Software engineer",
+        "Web Developer",
+        "Front-end Developer",
+        "Product Designer",
+        "System analyst",
+        "System architect",
+        "Agile coach",
+        "Data Scientist",
+        "Data engineer",
+        "Business-analyst",
+        "Financial analyst",
+        "Credit analyst",
+        "Corporate lawyer",
+        "Judicial Lawyer",
+        "Marketing Manager",
+        "Marketing Specialist",
+    ]
 
-    # with open("vacs_dict.pkl", "wb") as f:
-    #     pickle.dump(vacancy_dict, f)
+    parsed_dict = {prof: IndeedParser(keywords=prof, region="Moscow") for prof in professions}
+
+    for prof_parser in parsed_dict.values():
+        prof_parser.start()
+    for prof_parser in parsed_dict.values():
+        prof_parser.join()
+
+    with open("parsed_dict.pkl", "wb") as f:
+        pickle.dump(parsed_dict, f)
+
+if __name__ == '__main__':
+    main()
+
+
