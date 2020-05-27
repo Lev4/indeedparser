@@ -11,7 +11,9 @@ def time_track(func):
         elapsed = round(ended_at - started_at, 4)
         print(f'Функция работала {elapsed} секунд(ы)')
         return result
+
     return surrogate
+
 
 professions_ru = [
     "Java разработчик ",
@@ -55,4 +57,13 @@ professions_en = [
 professions = {
     "ru": professions_ru,
     "en": professions_en,
+}
+
+regions = {
+    "us": ["Texas", "New York", "Dallas", "California", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana",
+                   "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan",
+                   "Minnesota"],
+    "de": ["Germany", "Berlin"],
+    "uk": ["London", "Edinburgh"],
+    "ru": ["Москва", "Moscow"]
 }

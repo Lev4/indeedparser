@@ -5,6 +5,7 @@ import pickle
 import threading
 from utils import time_track
 from utils import professions
+from utils import regions
 
 
 class IndeedParser(threading.Thread):
@@ -34,15 +35,26 @@ class IndeedParser(threading.Thread):
         if region:
             self.region = region
             self.name += "_" + region
-            if region in ["Berlin"]:
+            if region in regions["de"]:
                 self.base_url = f"de.{self.base_url}"
+                self.region = '+'.join(self.region.strip().split(" "))
                 self.jobsearch_url = f"https://{self.base_url}/jobs?q={self.keywords}&l={self.region}"
-            elif region in ["Москва",'Moscow']:
+
+            elif region in regions["ru"]:
                 self.base_url = f"ru.{self.base_url}"
+                self.region = '+'.join(self.region.strip().split(" "))
                 self.jobsearch_url = f"https://{self.base_url}/jobs?q={self.keywords}&l={self.region}"
-            elif region in ["London"]:
+
+            elif region in regions["uk"]:
                 self.base_url = "www.indeed.co.uk"
+                self.region = '+'.join(self.region.strip().split(" "))
                 self.jobsearch_url = f"https://{self.base_url}/jobs?q={self.keywords}&l={self.region}"
+
+            elif region in regions["us"]:
+                self.base_url = "www.indeed.com"
+                self.region = '+'.join(self.region.strip().split(" "))
+                self.jobsearch_url = f"https://{self.base_url}/jobs?q={self.keywords}&l={self.region}"
+
         else:
             self.jobsearch_url = f"https://ru.indeed.com/jobs?q={self.keywords}"
 
@@ -60,8 +72,7 @@ class IndeedParser(threading.Thread):
 
         soup = self._make_soup(self.jobsearch_url)
         total_vacs = soup.find("div", {"id": "searchCountPages"}).text.strip().split(' ')[-2]
-        total_vacs = int(total_vacs)
-
+        total_vacs = int(total_vacs.replace(",",""))
         generated_links = [self.jobsearch_url + f"&start={c}" for c in range(10, total_vacs, 10)]
 
         self.pagelinks = [self.jobsearch_url] + generated_links
@@ -86,8 +97,10 @@ class IndeedParser(threading.Thread):
 
         vacancy_link = "https://ru.indeed.com" + right_link_part
         soup = self._make_soup(vacancy_link)
-        page_content = soup.find("div", class_="jobsearch-jobDescriptionText").text
-
+        try:
+            page_content = soup.find("div", class_="jobsearch-jobDescriptionText").text
+        except AttributeError:
+            page_content = ""
         return page_content
 
     def run(self):
@@ -113,7 +126,7 @@ class IndeedParser(threading.Thread):
 @time_track
 def main():
 
-    parsed_dict = {prof: IndeedParser(keywords=prof, region="Moscow") for prof in professions["ru"]}
+    parsed_dict = {prof: IndeedParser(keywords=prof, region="New York") for prof in professions["en"]}
     for prof_parser in parsed_dict.values():
         prof_parser.start()
     for prof_parser in parsed_dict.values():
@@ -125,7 +138,6 @@ def main():
 
     with open("vacs_dict.pkl", "wb") as f:
         pickle.dump(vacs_dict, f)
-
 
 if __name__ == '__main__':
     main()
