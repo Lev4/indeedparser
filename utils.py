@@ -61,8 +61,8 @@ professions = {
 
 regions = {
     "us": ["Texas", "New York", "Dallas", "California", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana",
-                   "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan",
-                   "Minnesota"],
+           "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan",
+           "Minnesota"],
     "de": ["Germany", "Berlin"],
     "uk": ["London", "Edinburgh"],
     "ru": ["Москва", "Moscow"]
