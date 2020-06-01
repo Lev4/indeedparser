@@ -134,7 +134,7 @@ def main():
     for k, v in parsed_dict.items():
         vacs_dict[k] = v.vacancy_texts
 
-    with open("vacs_dict.pkl", "wb") as f:
+    with open("vacs_dictNY.pkl", "wb") as f:
         pickle.dump(vacs_dict, f)
 
 if __name__ == '__main__':
