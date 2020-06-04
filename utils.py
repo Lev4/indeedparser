@@ -1,4 +1,5 @@
 import time
+import sys
 
 
 def time_track(func):
@@ -8,12 +9,27 @@ def time_track(func):
         result = func(*args, **kwargs)
 
         ended_at = time.time()
-        elapsed = round((ended_at - started_at)/60, 1)
+        elapsed = round((ended_at - started_at) / 60, 1)
 
         print(f'Функция работала {elapsed} минут(ы)')
         return result
 
     return surrogate
+
+def get_location_from_args():
+    """ Возвращает город из аргуметна командной строки"""
+
+    location_args = sys.argv
+    space_lock_join = ""
+
+    if len(location_args) > 1:
+        if len(location_args[1].split("_")) > 1:
+            space_lock_join = ' '.join(location_args[1].split("_"))
+            print(space_lock_join)
+        else:
+            space_lock_join = location_args[1]
+
+    return space_lock_join
 
 
 professions_ru = [
@@ -92,13 +108,13 @@ patterns_dict = {
          },
         {"IS_PUNCT": True, "OP": "?"},
         {
-         "LEMMA": "knowledge",
-         "LOWER": "knowledge",
-         "OP": "?"
-         },
+            "LEMMA": "knowledge",
+            "LOWER": "knowledge",
+            "OP": "?"
+        },
         {"LEMMA": "skill", "LOWER": "skill"},
-        {"LEMMA": "experience", "LOWER":"experience"},
-        {"LEMMA": "require", "LOWER":"require"},
+        {"LEMMA": "experience", "LOWER": "experience"},
+        {"LEMMA": "require", "LOWER": "require"},
     ],
 
     "Desirable Experience": [
@@ -133,7 +149,7 @@ patterns_dict = {
     ],
 
     "Qualifications:": [
-        {"LEMMA": "qualification", "LOWER": "qualification" },
+        {"LEMMA": "qualification", "LOWER": "qualification"},
         {"IS_PUNCT": True, "OP": "?"},
     ],
     "If you have a": [
@@ -173,7 +189,7 @@ patterns_dict = {
     ],
     "You must have": [
         {"LEMMA": "you"},
-        {"LEMMA": "must", "OP":"?"},
+        {"LEMMA": "must", "OP": "?"},
         {"LEMMA": "have"},
 
     ],
