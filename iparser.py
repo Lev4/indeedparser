@@ -93,7 +93,13 @@ class IndeedParser(threading.Thread):
     def _get_vacancy_text(self, right_link_part):
         """ Получает текст вакансии """
 
-        vacancy_link = "https://ru.indeed.com" + right_link_part
+        if right_link_part.startswith("https://"):
+            vacancy_link = right_link_part
+        else:
+            vacancy_link = f"https://{self.base_url}{right_link_part}"
+        # print(vacancy_link)
+        # https://directtointerview.indeed.com/jobs/7c35f8b03338250d
+
         soup = self._make_soup(vacancy_link)
         try:
             page_content = soup.find("div", class_="jobsearch-jobDescriptionText").text
@@ -115,7 +121,7 @@ class IndeedParser(threading.Thread):
             self.list_of_vacancy_links.extend(temp_list_of_vacancy_links)
 
         self.list_of_vacancy_links = list(set(self.list_of_vacancy_links))
-
+        # print(self.list_of_vacancy_links)
         for vaclink in tqdm(self.list_of_vacancy_links):
             vac_text = self._get_vacancy_text(vaclink)
             self.vacancy_texts.append(vac_text)
@@ -133,6 +139,10 @@ def main():
     vacs_dict = {}
     for k, v in parsed_dict.items():
         vacs_dict[k] = v.vacancy_texts
+    print(f"{'*' * 10} Удалось найти: {'*' * 10}")
+    for k, v in vacs_dict.items():
+        print(f"{k} - {len(v)} вакансий")
+    print(f"{'*' * 30}")
 
     with open("dallas.pkl", "wb") as f:
         pickle.dump(vacs_dict, f)

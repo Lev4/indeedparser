@@ -199,5 +199,10 @@ patterns_dict = {
         {"LEMMA": "desire"},
         {"TEXT": "at"},
         {"LEMMA": "entrance"},
+    ],
+    "Nice to have": [
+        {"LEMMA": "nice"},
+        {"TEXT": "to"},
+        {"LEMMA": "have"},
     ]
 }
