@@ -124,7 +124,7 @@ class IndeedParser(threading.Thread):
 @time_track
 def main():
 
-    parsed_dict = {prof: IndeedParser(keywords=prof, region="New York") for prof in professions["en"]}
+    parsed_dict = {prof: IndeedParser(keywords=prof, region="Dallas") for prof in professions["en"]}
     for prof_parser in parsed_dict.values():
         prof_parser.start()
     for prof_parser in parsed_dict.values():
@@ -134,7 +134,7 @@ def main():
     for k, v in parsed_dict.items():
         vacs_dict[k] = v.vacancy_texts
 
-    with open("vacs_dictNY.pkl", "wb") as f:
+    with open("dallas.pkl", "wb") as f:
         pickle.dump(vacs_dict, f)
 
 if __name__ == '__main__':
