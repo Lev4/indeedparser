@@ -1,10 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from tqdm.auto import tqdm
-import pickle
 import threading
-from utils import time_track
-from utils import professions
 from utils import regions
 
 
@@ -126,26 +123,3 @@ class IndeedParser(threading.Thread):
             vac_text = self._get_vacancy_text(vaclink)
             self.vacancy_texts.append(vac_text)
 
-
-@time_track
-def main():
-
-    parsed_dict = {prof: IndeedParser(keywords=prof, region="Dallas") for prof in professions["en"]}
-    for prof_parser in parsed_dict.values():
-        prof_parser.start()
-    for prof_parser in parsed_dict.values():
-        prof_parser.join()
-
-    vacs_dict = {}
-    for k, v in parsed_dict.items():
-        vacs_dict[k] = v.vacancy_texts
-    print(f"{'*' * 10} Удалось найти: {'*' * 10}")
-    for k, v in vacs_dict.items():
-        print(f"{k} - {len(v)} вакансий")
-    print(f"{'*' * 30}")
-
-    with open("dallas.pkl", "wb") as f:
-        pickle.dump(vacs_dict, f)
-
-if __name__ == '__main__':
-    main()

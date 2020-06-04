@@ -20,7 +20,7 @@ def get_location_from_args():
     """ Возвращает город из аргуметна командной строки"""
 
     location_args = sys.argv
-    space_lock_join = ""
+    space_lock_join = None
 
     if len(location_args) > 1:
         if len(location_args[1].split("_")) > 1:
