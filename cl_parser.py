@@ -2,6 +2,8 @@ import pickle
 from utils import time_track
 from utils import professions
 from utils import get_location_from_args
+from datetime import datetime, timedelta
+
 
 
 @time_track
@@ -25,7 +27,8 @@ def main():
         print(f"{k} - {len(v)} вакансий")
     print(f"{'*' * 30}")
 
-    with open("dallas.pkl", "wb") as f:
+    current_date = datetime.today().strftime("%d-%m-%Y")
+    with open(f"dallas_{current_date}.pkl", "wb") as f:
         pickle.dump(vacs_dict, f)
 
 

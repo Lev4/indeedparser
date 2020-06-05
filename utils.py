@@ -1,5 +1,19 @@
 import time
 import sys
+from collections import namedtuple
+
+Vacancy = namedtuple('Vacancy', [
+    'vacancy_id',
+    'vacancy_description',
+    'profession'
+    'country',
+    'city',
+    'requirements',
+    'skills',
+    'parsing_date',
+])
+
+
 
 
 def time_track(func):
@@ -30,6 +44,9 @@ def get_location_from_args():
             space_lock_join = location_args[1]
 
     return space_lock_join
+
+
+
 
 
 professions_ru = [
