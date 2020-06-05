@@ -2,7 +2,7 @@ import pickle
 from utils import time_track
 from utils import professions
 from utils import get_location_from_args
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 
@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 def main():
     location = get_location_from_args()
     if location:
-        parsed_dict = {prof: IndeedParser(keywords=prof, region="Dallas") for prof in professions["en"]}
+        parsed_dict = {prof: IndeedParser(keywords=prof, region=location) for prof in professions["en"]}
     else:
         parsed_dict = {prof: IndeedParser(keywords=prof) for prof in professions["en"]}
 
