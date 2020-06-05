@@ -1,21 +1,8 @@
 import sqlite3
-
 from utils import Vacancy
 
+vacancy = Vacancy
 vacancy_db = "vacancies.sqlite3"
-
-
-# Vacancy = namedtuple('Vacancy', [
-#     'vacancy_id',
-#     'vacancy_description',
-#     'profession'
-#     'country',
-#     'city',
-#     'requirements',
-#     'skills',
-#     'parsing_date',
-# ])
-
 
 class Db_handler:
 
@@ -32,7 +19,7 @@ class Db_handler:
 
             return data_result
         else:
-            c.execute(query)
+            c.execute(query,)
             con.commit()
             con.close()
 
@@ -51,8 +38,9 @@ class Db_handler:
         """
         self._stmt_executer(stmt)
 
-    def addvacancy(self, Vacancy):
-        stmt = f""" INSERT INTO prices ('vacancy_id',
+    def addvacancy(self, vacancy):
+
+        stmt = """ INSERT INTO vacancies_tab ('vacancy_id',
                                       'vacancy_description',
                                       'profession', 
                                       'country',
@@ -60,27 +48,38 @@ class Db_handler:
                                       'requirements', 
                                       'skills',
                                       'parsing_date') 
-                    VALUES ('{Vacancy.vacancy_id}',
-                            '{Vacancy.vacancy_description}', ,
-                            '{Vacancy.profession}',
-                            '{Vacancy.country}',
-                            '{Vacancy.city}',
-                            '{Vacancy.requirements}',
-                            '{Vacancy.skills}',
-                            '{Vacancy.parsing_date}'),
-                            ) """
-        self._stmt_executer(stmt)
+                    VALUES (?,?,?,?,?,?,?,?)
+                             """
+        con = sqlite3.connect(self.db)
+        c = con.cursor()
+        vacancy_tup = (vacancy.vacancy_id[0],
+                       vacancy.vacancy_description[0],
+                       vacancy.profession,
+                       vacancy.country[0],
+                       vacancy.city[0],
+                       vacancy.requirements[0],
+                       vacancy.skills[0],
+                       vacancy.parsing_date)
 
-    def update_vacancy(self, cheese_id, price):
-        stmt = f"UPDATE prices SET price = {price} WHERE cheese_id = {cheese_id} "
-        self._stmt_executer(stmt)
+        c.execute(stmt, vacancy_tup)
+        con.commit()
+        con.close()
+
+
+    # def update_vacancy(self, cheese_id, price):
+    #     stmt = f"UPDATE prices SET price = {price} WHERE cheese_id = {cheese_id} "
+    #     self._stmt_executer(stmt)
 
     def show_vacancies(self):
         stmt = f"SELECT * FROM vacancies_tab"
         return self._stmt_executer(stmt, get_data=True)
 
-    def show_vacancies_by_date(self, target_date):
-        stmt = f"SELECT * FROM vacancies_tab WHERE parsing_date = '{target_date}'"
+    def show_vacancy_ids(self):
+        stmt = f"SELECT vacancy_id FROM vacancies_tab"
         return self._stmt_executer(stmt, get_data=True)
+
+
+
+
 
 

@@ -4,6 +4,7 @@ from tqdm.auto import tqdm
 import threading
 from utils import regions
 from utils import Vacancy
+from datetime import datetime
 
 
 
@@ -125,6 +126,7 @@ class IndeedParser(threading.Thread):
             temp_list_of_vacancy_links = self._get_vacancy_pages(joblist_url)
             self.list_of_vacancy_links.extend(temp_list_of_vacancy_links)
 
+        self.list_of_vacancy_links = list(set( self.list_of_vacancy_links))
         self._check_existing_vacancy_ids()
 
         c_date = datetime.today().strftime("%d-%m-%Y")
@@ -135,8 +137,8 @@ class IndeedParser(threading.Thread):
         for vaclink in tqdm(self.list_of_vacancy_links):
             vac_text = self._get_vacancy_text(vaclink)
             self.vacancy_texts.append(vac_text)
-            vactuple = Vacancy(vaclink, vac_text, self.keywords, self.country, self.region, reqs, skills, c_date)
-            self.vacancies.append(vactuple)
+            vacobj = Vacancy(vaclink, vac_text, self.keywords, self.country, self.region, reqs, skills, c_date)
+            self.vacancies.append(vacobj)
 
 
     def _check_existing_vacancy_ids(self):

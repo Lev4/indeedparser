@@ -1,18 +1,17 @@
 import time
 import sys
-from collections import namedtuple
 
-Vacancy = namedtuple('Vacancy', [
-    'vacancy_id',
-    'vacancy_description',
-    'profession'
-    'country',
-    'city',
-    'requirements',
-    'skills',
-    'parsing_date',
-])
+class Vacancy:
 
+    def __init__(self, vacancy_id, vacancy_description, profession, country, city, requirements, skills, parsing_date):
+        self.vacancy_id = vacancy_id,
+        self.vacancy_description =  vacancy_description,
+        self.profession = profession
+        self.country = country,
+        self.city = city,
+        self.requirements = requirements,
+        self.skills = skills,
+        self.parsing_date = parsing_date
 
 
 
