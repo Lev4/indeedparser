@@ -97,18 +97,19 @@ regions = {
            "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan",
            "Minnesota"],
     "de": ["Germany", "Berlin"],
-    "uk": ["London", "Edinburgh"],
+    "uk": ["London", "Edinburgh", "Manchester", "Birmingham", "Leeds", "Glasgow", "Southampton", "Liverpool",
+           "Newcastle", "Nottingham", "Sheffield", "Bristol", "Belfast", "Leicester"],
     "ru": ["Москва", "Moscow"]
 }
 
 patterns_dict = {
     "Requirements": [
-        {"LEMMA": "requirement"},
+        {"LEMMA": "requirements"},
         {"IS_PUNCT": True, "OP": "?"},
     ],
 
     "Required Skills": [
-        {"LEMMA": "require", "LOWER": "require"},
+        {"LOWER": "require", },
         {"LOWER": "skill"}
     ],
     "Experience & Skills Required": [
