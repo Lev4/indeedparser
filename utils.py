@@ -3,9 +3,10 @@ import sys
 
 class Vacancy:
 
-    def __init__(self, vacancy_id, vacancy_description, profession, country, city, requirements, skills, parsing_date):
+    def __init__(self, vacancy_id, vacancy_description, vacancy_description_html, profession, country, city, requirements, skills, parsing_date):
         self.vacancy_id = vacancy_id,
-        self.vacancy_description =  vacancy_description,
+        self.vacancy_description = vacancy_description,
+        self.vacancy_description = vacancy_description_html,
         self.profession = profession
         self.country = country,
         self.city = city,
@@ -68,23 +69,26 @@ professions_ru = [
 ]
 
 professions_en = [
-    "Java Developer ",
-    "Software engineer",
-    "Web Developer",
-    "Front-end Developer",
-    "Product Designer",
-    "System analyst",
-    "System architect",
-    "Agile coach",
-    "Data Scientist",
-    "Data engineer",
-    "Business-analyst",
-    "Financial analyst",
-    "Credit analyst",
-    "Corporate lawyer",
-    "Judicial Lawyer",
-    "Marketing Manager",
-    "Marketing Specialist",
+    # "Java Developer ",
+    # "Software engineer",
+    # "Web Developer",
+    # "Front-end Developer",
+    # "Product Designer",
+    # "System analyst",
+    # "System architect",
+    # "Agile coach",
+    # "Data Scientist",
+    # "Data engineer",
+    # "Business-analyst",
+    # "Financial analyst",
+    # "Credit analyst",
+    # "Corporate lawyer",
+    # "Judicial Lawyer",
+    # "Marketing Manager",
+    # "Marketing Specialist",
+    "HR Recruiter",
+    "HR Business Partner",
+    "HR Compensation & Benefit"
 ]
 
 professions = {

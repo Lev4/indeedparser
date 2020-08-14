@@ -6,6 +6,10 @@ from utils import regions
 from utils import Vacancy
 from datetime import datetime
 
+from utils import Vacancy, time_track
+import urllib3
+
+urllib3.disable_warnings()
 
 
 class IndeedParser(threading.Thread):
@@ -66,7 +70,7 @@ class IndeedParser(threading.Thread):
     def _make_soup(self, url):
         """ Создает объект soup из ссылки """
 
-        res = requests.get(url)
+        res = requests.get(url, verify=False)
         page = res.text
         soup = BeautifulSoup(page, "html.parser")
         return soup
@@ -109,9 +113,11 @@ class IndeedParser(threading.Thread):
         soup = self._make_soup(vacancy_link)
         try:
             page_content = soup.find("div", class_="jobsearch-jobDescriptionText").text
+            page_content_html = str(soup.find("div", class_="jobsearch-jobDescriptionText"))
         except AttributeError:
             page_content = ""
-        return page_content
+            page_content_html = ""
+        return page_content, page_content_html
 
     def run(self):
         """ Запускает парсер """
@@ -135,9 +141,9 @@ class IndeedParser(threading.Thread):
 
         # print(self.list_of_vacancy_links)
         for vaclink in tqdm(self.list_of_vacancy_links):
-            vac_text = self._get_vacancy_text(vaclink)
+            vac_text, vac_html = self._get_vacancy_text(vaclink)
             self.vacancy_texts.append(vac_text)
-            vacobj = Vacancy(vaclink, vac_text, self.keywords, self.country, self.region, reqs, skills, c_date)
+            vacobj = Vacancy(vaclink, vac_text, vac_html, self.keywords, self.country, self.region, reqs, skills, c_date)
             self.vacancies.append(vacobj)
 
 

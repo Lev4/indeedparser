@@ -12,7 +12,7 @@ regionslist = regions["uk"] + regions["us"]
 @time_track
 def main():
 
-    vacancy_db = "vacancies.sqlite3"
+    vacancy_db = "vacancies_html.sqlite3"
     db = db_handler.Db_handler(vacancy_db)
     db.create_tab()
 

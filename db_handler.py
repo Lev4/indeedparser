@@ -29,6 +29,7 @@ class Db_handler:
         CREATE TABLE IF NOT EXISTS vacancies_tab
               (vacancy_id text,
                vacancy_description text,
+               vacancy_description_html text,
                profession text,
                country text,
                city text, 
@@ -42,18 +43,20 @@ class Db_handler:
 
         stmt = """ INSERT INTO vacancies_tab ('vacancy_id',
                                       'vacancy_description',
+                                      'vacancy_description_html',
                                       'profession', 
                                       'country',
                                       'city',
                                       'requirements', 
                                       'skills',
                                       'parsing_date') 
-                    VALUES (?,?,?,?,?,?,?,?)
+                    VALUES (?,?,?,?,?,?,?,?,?)
                              """
         con = sqlite3.connect(self.db)
         c = con.cursor()
         vacancy_tup = (vacancy.vacancy_id[0],
                        vacancy.vacancy_description[0],
+                       vacancy.vacancy_description_html[0],
                        vacancy.profession,
                        vacancy.country[0],
                        vacancy.city[0],
